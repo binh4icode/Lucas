@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mini Cookie Clicker</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <h1>🍪 Mini Cookie Clicker</h1>
+
+    <div class="stats">
+        Cookies: <span id="cookies">0</span>
+    </div>
+
+    <button id="cookie">🍪</button>
+
+    <div class="shop">
+        <h2>Upgrades</h2>
+
+        <button class="upgrade" id="cursorBtn">
+            Buy Cursor (+1 cookie/sec) -
+            Cost: <span id="cursorCost">25</span>
+        </button>
+
+        <button class="upgrade" id="factoryBtn">
+            Buy Factory (+5 cookies/sec) -
+            Cost: <span id="factoryCost">100</span>
+        </button>
+
+        <div class="owned">
+            <p>Cursors: <span id="cursorCount">0</span></p>
+            <p>Factories: <span id="factoryCount">0</span></p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

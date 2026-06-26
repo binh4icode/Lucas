@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>🎰 Slot Machine</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:linear-gradient(135deg,#0f172a,#1e293b);
+    font-family:Arial,sans-serif;
+    color:white;
+}
+
+.machine-card{
+    text-align:center;
+    background:#111827;
+    padding:30px;
+    border-radius:25px;
+    border:5px solid gold;
+    box-shadow:0 0 30px rgba(255,215,0,.4);
+}
+
+h1{
+    margin-bottom:15px;
+    font-size:3rem;
+}
+
+#money{
+    color:#22c55e;
+    font-size:2rem;
+    font-weight:bold;
+    margin-bottom:20px;
+}
+
+.machine{
+    display:flex;
+    gap:15px;
+    justify-content:center;
+    margin-bottom:25px;
+}
+
+.reel-window{
+    width:120px;
+    height:120px;
+    overflow:hidden;
+    background:white;
+    border-radius:12px;
+    border:3px solid #ddd;
+}
+
+.reel-strip{
+    width:100%;
+}
+
+.symbol{
+    height:120px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:70px;
+}
+
+button{
+    padding:14px 35px;
+    font-size:20px;
+    font-weight:bold;
+    background:gold;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+}
+
+button:disabled{
+    opacity:.5;
+}
+
+#message{
+    margin-top:20px;
+    min-height:40px;
+    font-size:28px;
+    font-weight:bold;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="machine-card">
+
+<h1>🎰 SLOT MACHINE 🎰</h1>
+
+<div id="money">$100</div>
+
+<div class="machine">
+
+<div class="reel-window">
+<div class="reel-strip" id="reel1"></div>
+</div>
+
+<div class="reel-window">
+<div class="reel-strip" id="reel2"></div>
+</div>
+
+<div class="reel-window">
+<div class="reel-strip" id="reel3"></div>
+</div>
+
+</div>
+
+<button id="spinBtn">
+SPIN ($10)
+</button>
+
+<div id="message"></div>
+
+</div>
+
+
+<script>
+
+const symbols=[
+"🍒",
+"🍋",
+"🍇",
+"🍉",
+"⭐",
+"💎",
+"7️⃣"
+];
+
+
+const reels=[
+document.getElementById("reel1"),
+document.getElementById("reel2"),
+document.getElementById("reel3")
+];
+
+
+const moneyDisplay =
+document.getElementById("money");
+
+const message =
+document.getElementById("message");
+
+const spinBtn =
+document.getElementById("spinBtn");
+
+
+let money=100;
+
+const height=120;
+
+
+
+function updateMoney(){
+
+moneyDisplay.textContent =
+"$"+money;
+
+}
+
+
+
+function createReel(reel, finalSymbol){
+
+reel.innerHTML="";
+
+
+for(let i=0;i<50;i++){
+
+let div=document.createElement("div");
+
+div.className="symbol";
+
+
+if(i===45 && finalSymbol){
+    div.textContent=finalSymbol;
+}
+else{
+    div.textContent =
+    symbols[
+    Math.floor(Math.random()*symbols.length)
+    ];
+}
+
+
+reel.appendChild(div);
+
+}
+
+}
+
+
+
+function delay(ms){
+
+return new Promise(resolve=>
+setTimeout(resolve,ms));
+
+}
+
+
+
+async function spin(){
+
+
+if(money<10){
+
+message.textContent="💸 OUT OF MONEY";
+message.style.color="red";
+return;
+
+}
+
+
+spinBtn.disabled=true;
+
+
+money-=10;
+
+updateMoney();
+
+message.textContent="";
+
+
+// Pick final results FIRST
+let results=[
+symbols[Math.floor(Math.random()*symbols.length)],
+symbols[Math.floor(Math.random()*symbols.length)],
+symbols[Math.floor(Math.random()*symbols.length)]
+];
+
+
+
+// Build reels with those results
+reels.forEach((reel,index)=>{
+createReel(reel,results[index]);
+});
+
+
+
+// Start all spinning
+reels.forEach((reel,index)=>{
+
+reel.style.transition =
+"none";
+
+reel.style.transform =
+"translateY(0)";
+
+
+setTimeout(()=>{
+
+reel.style.transition =
+`transform ${2+index*.4}s cubic-bezier(.17,.84,.44,1)`;
+
+
+reel.style.transform =
+`translateY(-${45*height}px)`;
+
+
+},50);
+
+});
+
+
+
+await delay(3500);
+
+
+
+let a=results[0];
+let b=results[1];
+let c=results[2];
+
+
+
+if(a===b && b===c){
+
+money+=100;
+
+message.textContent=
+"🎉 JACKPOT +$100";
+
+message.style.color="gold";
+
+
+}
+else if(
+a===b ||
+b===c ||
+a===c
+){
+
+money+=25;
+
+message.textContent=
+"✨ WIN +$25";
+
+message.style.color="#22c55e";
+
+
+}
+else{
+
+message.textContent=
+"❌ LOST $10";
+
+message.style.color="#ff6666";
+
+}
+
+
+
+updateMoney();
+
+
+
+spinBtn.disabled=false;
+
+
+}
+
+
+
+spinBtn.addEventListener(
+"click",
+spin
+);
+
+
+
+updateMoney();
+
+
+</script>
+
+</body>
+</html>

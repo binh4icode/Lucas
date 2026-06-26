@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mini Casino - Roulette</title>
+
+<style>
+
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+body{
+    font-family:Arial,sans-serif;
+    background:radial-gradient(circle,#222,#050505);
+    color:white;
+    text-align:center;
+}
+
+.hidden{
+    display:none !important;
+}
+
+.screen{
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+}
+
+h1{
+    color:gold;
+    margin-bottom:20px;
+}
+
+.box{
+    background:#111;
+    border-radius:15px;
+    padding:20px;
+    margin:10px;
+    min-width:280px;
+}
+
+button{
+    padding:12px 20px;
+    margin:5px;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+    font-size:18px;
+}
+
+input{
+    padding:12px;
+    font-size:18px;
+    border-radius:10px;
+    border:none;
+    margin:10px;
+}
+
+.red{
+    background:#d90000;
+    color:white;
+}
+
+.black{
+    background:#000;
+    color:white;
+}
+
+.gold{
+    background:gold;
+    color:black;
+}
+
+.exit{
+    position:absolute;
+    top:20px;
+    right:20px;
+    width:50px;
+    height:50px;
+    background:#900;
+    color:white;
+    font-size:24px;
+}
+
+#wheel-container{
+    position:relative;
+    width:500px;
+    height:500px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin:20px auto;
+}
+
+#wheel{
+    width:420px;
+    height:420px;
+    border-radius:50%;
+    border:10px solid gold;
+    box-shadow:0 0 40px gold;
+    transition:transform 5s cubic-bezier(.15,.75,.15,1);
+}
+
+#pointer{
+    position:absolute;
+    top:15px;
+    left:50%;
+    transform:translateX(-50%);
+    border-left:25px solid transparent;
+    border-right:25px solid transparent;
+    border-top:55px solid white;
+    z-index:10;
+}
+
+#result{
+    font-size:26px;
+    color:gold;
+    margin:20px;
+}
+
+#history{
+    width:300px;
+    height:150px;
+    overflow-y:auto;
+    text-align:left;
+    background:black;
+}
+
+</style>
+</head>
+<body>
+
+<!-- MENU -->
+<div id="menu" class="screen">
+
+    <h1>🎰 Mini Casino</h1>
+
+    <div class="box">
+        <h2>Money: $<span id="menuMoney">100.00</span></h2>
+    </div>
+
+    <button class="gold" onclick="openRoulette()">
+        🎰 Roulette
+    </button>
+
+</div>
+
+<!-- ROULETTE -->
+<div id="roulette" class="screen hidden">
+
+    <button class="exit" onclick="leaveRoulette()">✖</button>
+
+    <h1>🎰 Roulette</h1>
+
+    <h2>
+        Prize Pool:
+        $<span id="poolDisplay">1000.00</span>
+    </h2>
+
+    <div class="box">
+        <h2>
+            Player:
+            $<span id="playerMoney">100.00</span>
+        </h2>
+
+        <input
+        id="bet"
+        type="number"
+        min="1"
+        placeholder="Bet Amount">
+
+        <br>
+
+        <button class="red" onclick="play('Red')">
+            🔴 Red
+        </button>
+
+        <button class="black" onclick="play('Black')">
+            ⚫ Black
+        </button>
+    </div>
+
+    <div class="box">
+        <h2>
+            🤖 AI:
+            $<span id="aiMoney">100.00</span>
+        </h2>
+
+        <div id="aiText">
+            Waiting...
+        </div>
+    </div>
+
+    <div id="wheel-container">
+        <div id="pointer"></div>
+        <div id="wheel"></div>
+    </div>
+
+    <div id="result">
+        Place your bet!
+    </div>
+
+    <button class="gold" onclick="resetGame()">
+        Reset Game
+    </button>
+
+    <h3 style="margin-top:20px;">History</h3>
+
+    <div id="history" class="box"></div>
+
+</div>
+
+<script>
+
+// ====================
+// GAME DATA
+// ====================
+
+let player = 100;
+let ai = 100;
+let pool = 1000;
+
+let spinning = false;
+let rotation = 0;
+
+// ====================
+// WHEEL
+// ====================
+
+const wheel = document.getElementById("wheel");
+
+const colors = [];
+
+for(let i=0;i<20;i++){
+    colors.push(i % 2 === 0 ? "Red" : "Black");
+}
+
+const slice = 360 / colors.length;
+
+const gradients = [];
+
+colors.forEach((color,index)=>{
+
+    gradients.push(
+        `${color.toLowerCase()}
+        ${index*slice}deg
+        ${(index+1)*slice}deg`
+    );
+
+});
+
+wheel.style.background =
+`conic-gradient(${gradients.join(",")})`;
+
+// ====================
+// MENU
+// ====================
+
+function openRoulette(){
+
+    document.getElementById("menu")
+    .classList.add("hidden");
+
+    document.getElementById("roulette")
+    .classList.remove("hidden");
+
+    updateUI();
+}
+
+function leaveRoulette(){
+
+    document.getElementById("roulette")
+    .classList.add("hidden");
+
+    document.getElementById("menu")
+    .classList.remove("hidden");
+
+    updateUI();
+}
+
+// ====================
+// PLAY
+// ====================
+
+function play(playerChoice){
+
+    if(spinning) return;
+
+    const bet =
+    Number(document.getElementById("bet").value);
+
+    if(!bet || bet <= 0){
+        alert("Enter a valid bet.");
+        return;
+    }
+
+    if(bet > player){
+        alert("Not enough money.");
+        return;
+    }
+
+    const aiChoice =
+    Math.random() < 0.5
+    ? "Red"
+    : "Black";
+
+    const aiBet =
+    Math.max(
+        1,
+        Math.floor(Math.random() * ai)
+    );
+
+    document.getElementById("aiText")
+    .innerHTML =
+    `AI picked <b>${aiChoice}</b><br>Bet: $${aiBet}`;
+
+    spinWheel(
+        playerChoice,
+        bet,
+        aiChoice,
+        aiBet
+    );
+}
+
+// ====================
+// SPIN
+// ====================
+
+function spinWheel(
+    playerChoice,
+    playerBet,
+    aiChoice,
+    aiBet
+){
+
+    spinning = true;
+
+    // TAKE BETS FIRST
+    player -= playerBet;
+    ai -= aiBet;
+
+    pool += playerBet;
+    pool += aiBet;
+
+    updateUI();
+
+    document.getElementById("result")
+    .innerHTML = "🎲 Spinning...";
+
+    rotation +=
+    360*8 +
+    Math.random()*360;
+
+    wheel.style.transform =
+    `rotate(${rotation}deg)`;
+
+    setTimeout(()=>{
+
+        const stopped =
+        rotation % 360;
+
+        const angle =
+        (stopped + 90) % 360;
+
+        const index =
+        Math.floor(angle / slice);
+
+        const landed =
+        colors[index];
+
+        let resultText =
+        `Landed: <b>${landed}</b><br>`;
+
+        // PLAYER
+
+        if(playerChoice === landed){
+
+            const payout =
+            playerBet * 2;
+
+            const paid =
+            Math.min(pool,payout);
+
+            player += paid;
+            pool -= paid;
+
+            resultText +=
+            `🎉 Player wins $${paid}<br>`;
+        }
+        else{
+
+            resultText +=
+            `❌ Player lost $${playerBet}<br>`;
+        }
+
+        // AI
+
+        if(aiChoice === landed){
+
+            const payout =
+            aiBet * 2;
+
+            const paid =
+            Math.min(pool,payout);
+
+            ai += paid;
+            pool -= paid;
+
+            resultText +=
+            `🤖 AI wins $${paid}`;
+        }
+        else{
+
+            resultText +=
+            `🤖 AI lost $${aiBet}`;
+        }
+
+        updateUI();
+
+        addHistory(
+            `Landed ${landed}`
+        );
+
+        document.getElementById("result")
+        .innerHTML = resultText;
+
+        spinning = false;
+
+    },5000);
+}
+
+// ====================
+// HISTORY
+// ====================
+
+function addHistory(text){
+
+    const history =
+    document.getElementById("history");
+
+    history.innerHTML =
+    `• ${text}<br>` +
+    history.innerHTML;
+}
+
+// ====================
+// UI
+// ====================
+
+function updateUI(){
+
+    document.getElementById("playerMoney")
+    .textContent =
+    player.toFixed(2);
+
+    document.getElementById("aiMoney")
+    .textContent =
+    ai.toFixed(2);
+
+    document.getElementById("poolDisplay")
+    .textContent =
+    pool.toFixed(2);
+
+    document.getElementById("menuMoney")
+    .textContent =
+    player.toFixed(2);
+}
+
+// ====================
+// RESET
+// ====================
+
+function resetGame(){
+
+    player = 100;
+    ai = 100;
+    pool = 1000;
+
+    rotation = 0;
+
+    wheel.style.transform =
+    "rotate(0deg)";
+
+    document.getElementById("history")
+    .innerHTML = "";
+
+    document.getElementById("result")
+    .innerHTML =
+    "Place your bet!";
+
+    document.getElementById("aiText")
+    .innerHTML =
+    "Waiting...";
+
+    updateUI();
+}
+
+updateUI();
+
+</script>
+
+</body>
+</html>
