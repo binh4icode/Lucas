@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Centers everything horizontally */
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            gap: 20px;
+            background-color: rgb(40, 97, 156);
+            font-family: sans-serif;
+        }
+
+        .buy-container {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            max-width: 500px; /* Limits maximum form size */
+            background-color: rgb(40, 131, 131);
+            padding: 40px;
+            border-radius: 40px;
+            box-sizing: border-box;
+        }
+
+        .buy-container h1 {
+            text-align: center;
+            color: white;
+            margin-top: 0;
+        }
+
+        label {
+            color: white;
+            margin-top: 15px;
+            margin-bottom: 5px;
+        }
+
+        input {
+            width: 100%; 
+            height: 30px;
+            border-radius: 5px;
+            border: none;
+            box-sizing: border-box;
+            padding: 5px;
+        }
+
+        .btn-wrapper {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+        }
+
+        button {
+            height: 70px;
+            width: 300px;
+            background-color: red;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+        }
+
+        button a {
+            color: white;
+            text-decoration: none;
+            font-size: 20px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="buy-container">
+        <h1>Purchase Tickets</h1>
+        
+        <label>Name:</label>
+        <input type="text">
+        
+        <label>Email:</label>
+        <input type="email">
+        
+        <label>Credit card number:</label>
+        <input type="text">
+        
+        <label>Amount:</label>
+        <input type="text">
+    </div>
+
+   
+    <div class="btn-wrapper">
+        <button><a href="success.html">Purchase</a></button>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Hangman</title>
+	<link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+	<h2>Hangman!</h2>
+
+	<div id="hangmanWord"></div>
+	<br>
+
+	<div id="playerInfo"></div>
+	<div id="guessesLeft"></div>
+
+	<br>
+
+	<label>Guess a letter:</label>
+	<br>
+	<input type="text" id="letterGuess" placeholder="enter a single letter">
+	<br>
+	<input type="submit" value="Submit" onclick="handleLetterGuess()">
+
+	<br><br>
+
+	<label>
+		Or, if you think you know the answer, guess the word:
+	</label>
+
+	<br>
+
+	<input type="text" id="wordGuess" placeholder="enter the whole word">
+
+	<br>
+
+	<input type="submit" value="Submit" onclick="handleWordGuess()">
+
+	<p>(Warning: an incorrect word guess will end the game!)</p>
+
+	<script src="script.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cookie Clicker</title>
+    <style>
+        Body {
+            background-color: azure;
+            text-align: center;
+            font-family: 'Times New Roman', Times, serif;
+
+        }
+
+        button1 {
+            padding: 20px;
+            border-radius: 100px;
+            background-color: rgb(227, 199, 16);
+            align-self: center;
+            font-size: large;
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 30px;
+        }
+
+        h1 {
+            text-align: center;
+            color: cornflowerblue;
+            font-size: 40px;
+        }
+
+        P {
+            text-align: center;
+            font-size: 25px;
+        }
+
+        button {
+            background-color: rgb(42, 42, 109);
+            margin: calc(center);
+            font-size: large;
+            font-family: 'Times New Roman', Times, serif;
+            border-radius: 10px;
+            align-self: center;
+            font-size: 30px;
+        }
+
+        button1:hover {
+            background-color: rgb(102, 89, 7);
+            cursor: pointer;
+            padding: 25px;
+        }
+
+        button:hover {
+            background-color: blue;
+            cursor: pointer;
+            padding: 25px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>
+        Cookie Clicker
+    </h1>
+    <button1 id="clickButton">
+        🍪Click me
+    </button1>
+    <p>
+        🍪Cookies: <span id="cookieAmount">0</span>
+    </p>
+
+    <button id="bakerButton">
+        🏭Cookie factorys(25 Cookies)
+    </button>
+    <p>
+        Cookie factorys: <span id="bakerAmount">0</span>
+    </p>
+
+    <Script>
+        let clickButton = document.getElementById("clickButton");
+        let cookieAmount = document.getElementById("cookieAmount");
+        let bakerButton = document.getElementById("bakerButton");
+        let bakerAmount = document.getElementById("bakerAmount");
+
+
+        clickButton.addEventListener("click", () => {
+
+            cookieAmount.innerText++
+
+        });
+
+    </Script>
+
+</body>
+
+</html>

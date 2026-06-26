@@ -1,0 +1,33 @@
+.navbar {
+    background-color: rgb(56, 88, 90)    !important;
+    
+}
+.carousel-item img{
+    height: 800px;
+    object-fit: cover;
+}
+.card-contanier{
+    display:flex ;
+    flex-wrap: wrap;
+    gap:150px;
+    justify-content: space-around;
+}
+h2{
+    text-align: center;
+    margin-top: 60px;
+    margin-bottom: 60px;
+}
+h1{
+    text-align: center;
+}
+
+.card {
+    background-color: azure !important;
+}
+
+body{
+    background-color:rgba(38, 38, 104, 0.445) ;
+}
+ a{
+    margin-left: 30px;
+ }
